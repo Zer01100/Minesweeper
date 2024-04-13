@@ -56,7 +56,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BoardVisualConverter.cs" />
-    <Compile Include="CellData.cs" />
     <Compile Include="VisibilityConverter.cs" />
     <Page Include="GameEasy.xaml">
       <SubType>Designer</SubType>

@@ -8,7 +8,7 @@ namespace Minesweeper
 {
     public class GameBoard
     {
-        public CellData[] Board; // Jednowymiarowa tablica komórek planszy
+        public int[] Board; // Jednowymiarowa tablica komórek planszy
 
         public int SizeX { get; private set; } // Liczba kolumn planszy
         public int SizeY { get; private set; } // Liczba wierszy planszy
@@ -19,12 +19,12 @@ namespace Minesweeper
             SizeY = sizeY;
 
             // Tworzenie planszy
-            Board = new CellData[sizeX * sizeY];
+            Board = new int[sizeX * sizeY];
 
             // Inicjalizacja komórek planszy
             for (int i = 0; i < sizeX * sizeY; i++)
             {
-                Board[i] = new CellData(0); // Domyślnie komórka ma wartość 0
+                Board[i] = 0; // Domyślnie komórka ma wartość 0
             }
 
             Random rand = new Random();
@@ -36,12 +36,12 @@ namespace Minesweeper
 
                 // Sprawdzenie, czy na danej pozycji już jest mina
                 // Jeśli tak, powtórz losowanie
-                if (Board[index].Value == 10)
+                if (Board[index] == 10)
                 {
                     i--;
                     continue;
                 }
-                Board[index].Value = 10;
+                Board[index] = 10;
             }
 
             // Liczenie min na polach sąsiednich
@@ -50,7 +50,7 @@ namespace Minesweeper
                 for (int j = 0; j < sizeY; j++)
                 {
                     int index = i * sizeY + j;
-                    if (Board[index].Value != 10) // Jeśli pole nie zawiera miny
+                    if (Board[index] != 10) // Jeśli pole nie zawiera miny
                     {
                         int liczbaMin = 0;
 
@@ -66,7 +66,7 @@ namespace Minesweeper
                                 if (nx >= 0 && nx < sizeX && ny >= 0 && ny < sizeY)
                                 {
                                     int neighborIndex = nx * sizeY + ny;
-                                    if (Board[neighborIndex].Value == 10)
+                                    if (Board[neighborIndex] == 10)
                                     {
                                         liczbaMin++;
                                     }
@@ -75,7 +75,7 @@ namespace Minesweeper
                         }
 
                         // Aktualizacja wartości pola
-                        Board[index].Value = liczbaMin;
+                        Board[index] = liczbaMin;
                     }
                 }
             }

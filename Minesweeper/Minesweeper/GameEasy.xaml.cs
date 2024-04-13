@@ -23,25 +23,34 @@ namespace Minesweeper
             GameBoard gameBoard = new GameBoard(8, 8, 10);
 
 
-            List<CellData> cellDataList = new List<CellData>();
-            foreach (var cell in gameBoard.Board)
-            {
-                cellDataList.Add(cell);
-            }
-
             // Przypisz kolekcję obiektów CellData do ItemsSource gameBoardArray
-            this.DataContext = cellDataList;
+            gameBoardArray.ItemsSource = gameBoard.Board;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-            var cellData = button.DataContext as CellData;
+            // Znajdź nadrzędny Grid dla przycisku
+            var grid = FindParent<Grid>((Button)sender);
 
-            if (cellData != null)
+            // Znajdź pierwszy przycisk w kontenerze
+            var button = (Button)VisualTreeHelper.GetChild(grid, 0);
+            button.Visibility = Visibility.Collapsed; // Schowaj przycisk
+
+            // Znajdź drugi element (TextBlock) w kontenerze
+            var textBlock = (TextBlock)VisualTreeHelper.GetChild(grid, 1);
+            textBlock.Visibility = Visibility.Visible; // Pokaż TextBlock
+        }
+
+        private DependencyObject FindParent<TDependencyObject>(DependencyObject child)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(child);
+
+            while (parent != null && !(parent is DependencyObject))
             {
-                cellData.IsVisible = true;
+                parent = VisualTreeHelper.GetParent(parent);
             }
+
+            return parent as DependencyObject;
         }
     }
 }

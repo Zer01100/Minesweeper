@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Minesweeper" Height="600" Width="400"
         Background="#C0C0C0"
-        FontFamily="Digital-7 Regular"
+        FontFamily="Digital-7 Mono"
         ResizeMode="NoResize">
 
     <Window.Resources>
@@ -15,8 +15,65 @@
     </Window.Resources>
 
     <Grid Width="350px" Height="550px" VerticalAlignment="Bottom" Margin="0,0,0,25">
-        <TextBlock />
-        <ItemsControl Name="gameBoardArray" Height="350px" VerticalAlignment="Bottom">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Button Content="Back" 
+                HorizontalAlignment="Left" 
+                Height="25" Margin="10,0,0,0" 
+                VerticalAlignment="Center" Width="50" 
+                Click="ButtonBack" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="20"/>
+
+        <TextBlock x:Name="TimerTextBlock" 
+                   HorizontalAlignment="Left" 
+                   Height="60" Margin="10,0,0,0" 
+                   Grid.Row="1" 
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center" 
+                   Width="100"
+                   FontSize="64" Text="000" 
+                   Foreground="Red" 
+                   Background="Black" 
+                   TextAlignment="Center"
+                   />
+
+        <TextBlock x:Name="FlagCounter" 
+            HorizontalAlignment="Left" 
+            Height="60" Margin="7,0,0,0" 
+            Grid.Row="1" 
+            TextWrapping="Wrap"
+            VerticalAlignment="Center" 
+            Width="100"
+            FontSize="64" Text="010" 
+            Foreground="Red" 
+            Background="Black" 
+            TextAlignment="Center" Grid.Column="2"
+                   />
+
+        <Rectangle x:Name="StatusEmoji" Grid.Column="1" 
+                   HorizontalAlignment="Left" 
+                   Height="63" Margin="27,20,0,0" 
+                   Grid.Row="1" 
+                   VerticalAlignment="Top" 
+                   Width="60" 
+                   MouseLeftButtonDown="GameRestart"
+                   >
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="/Smile.png" Stretch="Uniform"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <ItemsControl Name="gameBoardArray" Height="350px" VerticalAlignment="Bottom" Grid.Row="2" Grid.ColumnSpan="3">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="8" Rows="8"/>
@@ -26,7 +83,7 @@
                 <DataTemplate>
                     <Border BorderBrush="White" BorderThickness="1" Background="White">
                         <Grid>
-                            <Button x:Name="myButton" Click="Button_Click"  Background="Silver"/>
+                            <Button x:Name="myButton" Click="ButtonUncover" MouseRightButtonUp="ButtonFlagPlacement" Background="Silver" FontSize="24" Content="0"/>
                             <TextBlock  Text="{Binding}" 
                                         VerticalAlignment="Center" 
                                         HorizontalAlignment="Center" 
@@ -39,5 +96,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+
+
     </Grid>
 </Window>

@@ -7,12 +7,12 @@ using System.Windows.Threading;
 
 namespace Minesweeper
 {
-    public partial class GameEasy : Window
+    public partial class GameWindow : Window
     {
 
         private DispatcherTimer timer;
         private int seconds;
-        public GameEasy()
+        public GameWindow()
         {
             InitializeComponent();
             InitializeTimer();
@@ -23,7 +23,7 @@ namespace Minesweeper
 
         private void ButtonUncover(object sender, RoutedEventArgs e)
         {
-            var grid = FindParent<Grid>((Button)sender);
+            var grid = FindParent((Button)sender);
 
             var button = (Button)VisualTreeHelper.GetChild(grid, 0);
             button.Visibility = Visibility.Collapsed;
@@ -43,6 +43,7 @@ namespace Minesweeper
 
         private void UncoverZeroes(Grid grid)
         {
+            grid = FindParent(grid);
             var row = Grid.GetRow(grid);
             var column = Grid.GetColumn(grid);
 
@@ -68,13 +69,24 @@ namespace Minesweeper
             }
         }
 
-        private Grid FindParent<TDependencyObject>(DependencyObject child)
+        private Grid FindParent(DependencyObject child)
         {
             DependencyObject parent = VisualTreeHelper.GetParent(child);
 
-            while (parent != null && !(parent is DependencyObject))
+            while (parent != null && !(parent is Grid))
             {
-                parent = VisualTreeHelper.GetParent(parent);
+                if (parent is Border)
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+                else
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                    if (parent is Border)
+                    {
+                        parent = VisualTreeHelper.GetParent(parent);
+                    }
+                }
             }
 
             return parent as Grid;
@@ -127,7 +139,7 @@ namespace Minesweeper
 
         private void GameRestart(object sender, MouseButtonEventArgs e)
         {
-            GameEasy GameWindow = new GameEasy();
+            GameWindow GameWindow = new GameWindow();
             GameWindow.Left = this.Left;
             GameWindow.Top = this.Top;
             GameWindow.Show();

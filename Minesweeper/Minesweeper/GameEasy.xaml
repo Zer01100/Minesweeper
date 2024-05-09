@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minesweeper"
         mc:Ignorable="d"
-        Title="Minesweeper" Height="600" Width="400"
+        Title="Minesweeper"
         Background="#C0C0C0"
         FontFamily="Digital-7 Mono"
         ResizeMode="NoResize">
@@ -14,13 +14,13 @@
         <local:BoardVisualConverter x:Key="BoardVisualConverter" />
     </Window.Resources>
 
-    <Grid Width="350px" Height="550px" VerticalAlignment="Bottom" Margin="0,0,0,25">
+    <Grid Width="350px" Height="550px" VerticalAlignment="Top" Margin="0,0,0,25">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -70,9 +70,10 @@
                    VerticalAlignment="Center" 
                    Width="60" 
                    MouseLeftButtonDown="GameRestart"
+                   RenderOptions.BitmapScalingMode="HighQuality"
                    >
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/Smile.png" Stretch="Uniform"/>
+                <ImageBrush ImageSource="/Smile.png" Stretch="Uniform" TileMode="None"/>
             </Rectangle.Fill>
         </Rectangle>
 

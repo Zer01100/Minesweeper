@@ -26,7 +26,21 @@ namespace Minesweeper
         {
             GameWindow GameWindow = new GameWindow(8,8,10);
             GameWindow.Show();
-            this.Close();
+            Close();
+        }
+
+        private void StartGameMedium_Click(object sender, RoutedEventArgs e)
+        {
+            GameWindow GameWindow = new GameWindow(16, 16, 40);
+            GameWindow.Show();
+            Close();
+        }
+
+        private void StartGameHard_Click(object sender, RoutedEventArgs e)
+        {
+            GameWindow GameWindow = new GameWindow(16, 30, 99);
+            GameWindow.Show();
+            Close();
         }
     }
 }

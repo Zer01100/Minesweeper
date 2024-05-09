@@ -24,7 +24,7 @@ namespace Minesweeper
 
         private void StartGameEasy_Click(object sender, RoutedEventArgs e)
         {
-            GameWindow GameWindow = new GameWindow(8,8);
+            GameWindow GameWindow = new GameWindow(8,8,10);
             GameWindow.Show();
             this.Close();
         }

@@ -17,7 +17,8 @@
     <Grid Width="350px" Height="550px" VerticalAlignment="Bottom" Margin="0,0,0,25">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -32,12 +33,12 @@
                 HorizontalAlignment="Left" 
                 Height="25" Margin="10,0,0,0" 
                 VerticalAlignment="Center" Width="50" 
-                Click="ButtonBack" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="20"/>
+                Click="ButtonBack" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="20" Grid.Row="1"/>
 
         <TextBlock x:Name="TimerTextBlock" 
                    HorizontalAlignment="Left" 
                    Height="60" Margin="10,0,0,0" 
-                   Grid.Row="1" 
+                   Grid.Row="2" 
                    TextWrapping="Wrap"
                    VerticalAlignment="Center" 
                    Width="100"
@@ -50,7 +51,7 @@
         <TextBlock x:Name="FlagCounter" 
             HorizontalAlignment="Left" 
             Height="60" Margin="7,0,0,0" 
-            Grid.Row="1" 
+            Grid.Row="2" 
             TextWrapping="Wrap"
             VerticalAlignment="Center" 
             Width="100"
@@ -63,8 +64,8 @@
         <Rectangle x:Name="StatusEmoji" Grid.Column="1" 
                    HorizontalAlignment="Left" 
                    Height="63" Margin="27,20,0,0" 
-                   Grid.Row="1" 
-                   VerticalAlignment="Top" 
+                   Grid.Row="2" 
+                   VerticalAlignment="Center" 
                    Width="60" 
                    MouseLeftButtonDown="GameRestart"
                    >
@@ -73,34 +74,9 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <ItemsControl Name="gameBoardArray" Height="350px" VerticalAlignment="Bottom" Grid.Row="2" Grid.ColumnSpan="3">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="8" Rows="8"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="White" BorderThickness="1" Background="White">
-                        <Grid>
-                            <Button x:Name="myButton" 
-                                    Click="ButtonUncover" 
-                                    MouseRightButtonUp="ButtonFlagPlacement" 
-                                    Background="Silver" 
-                                    FontSize="24" 
-                                    Content="0"/>
-                            <TextBlock  Text="{Binding}" 
-                                        VerticalAlignment="Center" 
-                                        HorizontalAlignment="Center" 
-                                        FontSize="24"
-                                        Foreground="{Binding Converter={StaticResource BoardVisualConverter}}"
-                                        Background="White" 
-                                        Visibility="Hidden"/>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Grid x:Name="GridBoard" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20px">
+
+        </Grid>
 
 
     </Grid>

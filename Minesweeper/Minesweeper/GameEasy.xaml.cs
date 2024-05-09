@@ -12,101 +12,61 @@ namespace Minesweeper
 
         private DispatcherTimer timer;
         private int seconds;
-        public GameWindow()
+        private int rows;
+        private int columns;
+
+        public GameWindow(int rows,int columns)
         {
+            this.rows = rows;
+            this.columns = columns;
             InitializeComponent();
             InitializeTimer();
             GameBoard gameBoard = new GameBoard(8, 8, 10);
 
-            gameBoardArray.ItemsSource = gameBoard.Board;
+            CreateGridBoard();
         }
 
-        private void ButtonUncover(object sender, RoutedEventArgs e)
+        public void CreateGridBoard()
         {
-            var grid = FindParent((Button)sender);
 
-            var button = (Button)VisualTreeHelper.GetChild(grid, 0);
-            button.Visibility = Visibility.Collapsed;
-
-            var textBlock = (TextBlock)VisualTreeHelper.GetChild(grid, 1);
-            textBlock.Visibility = Visibility.Visible;
-
-            if(textBlock.Text == "0")
+            //Definiowanie rozmiaru planszy
+            for (int i = 0; i < rows; i++)
             {
-                UncoverZeroes(grid);
+                GridBoard.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             }
-            else if(textBlock.Text == "10")
+            for (int j = 0; j < columns; j++)
             {
-                //endGame();
+                GridBoard.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             }
-        }
 
-        private void UncoverZeroes(Grid grid)
-        {
-            grid = FindParent(grid);
-            var row = Grid.GetRow(grid);
-            var column = Grid.GetColumn(grid);
-
-
-            for (int i = Math.Max(0, row - 1); i <= Math.Min(7, row + 1); i++)
+            //Dodawanie przycisków do planszy
+            for (int i = 0; i < rows; i++)
             {
-                for (int j = Math.Max(0, column - 1); j <= Math.Min(7, column + 1); j++)
+                for (int j = 0; j < columns; j++)
                 {
-                    var neighboringGrid = gameBoardArray.ItemContainerGenerator.ContainerFromIndex(i * 8 + j) as Grid;
-                    if (neighboringGrid != null)
+                    var button = new Button
                     {
-                        var neighboringButton = (Button)VisualTreeHelper.GetChild(neighboringGrid, 0);
-                        var neighboringTextBlock = (TextBlock)VisualTreeHelper.GetChild(neighboringGrid, 1);
+                        Width = 30,
+                        Height = 30,
+                        Margin = new Thickness(1),
+                        Tag = new Tuple<int, int, int>(i, j, 0)
+                    };
 
-                        if (neighboringButton.Visibility == Visibility.Visible && neighboringTextBlock.Text == "0")
-                        {
-                            neighboringButton.Visibility = Visibility.Collapsed;
-                            neighboringTextBlock.Visibility = Visibility.Visible;
-                            UncoverZeroes(neighboringGrid);
-                        }
-                    }
+                    //button.Click += ButtonClick;
+                    //button.MouseRightButtonUp += ButtonFlag;
+                    Grid.SetRow(button, i);
+                    Grid.SetColumn(button, j);
+                    GridBoard.Children.Add(button);
                 }
             }
         }
 
-        private Grid FindParent(DependencyObject child)
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(child);
 
-            while (parent != null && !(parent is Grid))
-            {
-                if (parent is Border)
-                {
-                    parent = VisualTreeHelper.GetParent(parent);
-                }
-                else
-                {
-                    parent = VisualTreeHelper.GetParent(parent);
-                    if (parent is Border)
-                    {
-                        parent = VisualTreeHelper.GetParent(parent);
-                    }
-                }
-            }
 
-            return parent as Grid;
-        }
 
-        private void ButtonFlagPlacement(object sender, MouseButtonEventArgs e)
-        {
-            var button = sender as Button;
 
-                if ((button.Content.ToString() == "0") && (int.Parse(FlagCounter.Text) > 0))
-                {
-                    button.Content = "1";
-                    FlagCounter.Text = (int.Parse(FlagCounter.Text) - 1).ToString("D3");
-                }
-                else if ((button.Content.ToString()) == "1")
-                {
-                    button.Content = "0";
-                    FlagCounter.Text = (int.Parse(FlagCounter.Text) + 1).ToString("D3");
-                }
-        }
+
+
 
         private void InitializeTimer()
         {
@@ -139,7 +99,7 @@ namespace Minesweeper
 
         private void GameRestart(object sender, MouseButtonEventArgs e)
         {
-            GameWindow GameWindow = new GameWindow();
+            GameWindow GameWindow = new GameWindow(8,8);
             GameWindow.Left = this.Left;
             GameWindow.Top = this.Top;
             GameWindow.Show();

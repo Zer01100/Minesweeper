@@ -24,7 +24,9 @@ namespace Minesweeper
 
         private void StartGameEasy_Click(object sender, RoutedEventArgs e)
         {
-            GameWindow GameWindow = new GameWindow(8,8,10);
+            GameWindow GameWindow = new GameWindow(9,9,10);
+            GameWindow.Left = Left;
+            GameWindow.Top = Top;
             GameWindow.Show();
             Close();
         }
@@ -32,6 +34,8 @@ namespace Minesweeper
         private void StartGameMedium_Click(object sender, RoutedEventArgs e)
         {
             GameWindow GameWindow = new GameWindow(16, 16, 40);
+            GameWindow.Left = Left;
+            GameWindow.Top = Top;
             GameWindow.Show();
             Close();
         }
@@ -39,6 +43,8 @@ namespace Minesweeper
         private void StartGameHard_Click(object sender, RoutedEventArgs e)
         {
             GameWindow GameWindow = new GameWindow(16, 30, 99);
+            GameWindow.Left = Left;
+            GameWindow.Top = Top;
             GameWindow.Show();
             Close();
         }

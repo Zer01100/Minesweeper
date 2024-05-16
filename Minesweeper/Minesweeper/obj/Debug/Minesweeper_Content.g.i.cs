@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("smile.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("mine.ico")]
 
 

@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
+using System.Data.Common;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml.Schema;
 
 namespace Minesweeper
 {
@@ -18,93 +19,96 @@ namespace Minesweeper
         private int rows;
         private int columns;
         private int mines;
+        private int winCounter = 0;
+        bool isBoardGenerated = false;
 
         public GameWindow(int rows, int columns, int mines)
         {
-            Height = 360 + 30 * rows;
-            Width = 160 + 30 * columns;
+            Height = 360 + 32 * rows;
+            Width = 160 + 32 * columns;
+
             this.rows = rows;
             this.columns = columns;
             this.mines = mines;
             InitializeComponent();
             InitializeTimer();
             FlagCounter.Text = mines.ToString();
-            board = GameBoardGenerator(rows,columns,mines);
             buttons = new Button[rows, columns];
-
+            StatusEmoji.Fill = new ImageBrush(new BitmapImage(new Uri("smile.png", UriKind.Relative)));
             CreateGridBoard();
         }
 
 
-            private int[,] GameBoardGenerator(int sizeX, int sizeY, int numberOfMines)
+        private int[,] GameBoardGenerator(int avoidRow, int avoidColumn)
+        {
+            // Tworzenie planszy
+            int[,] Board = new int[rows, columns];
+
+            // Inicjalizacja komórek planszy
+            for (int i = 0; i < rows; i++)
             {
-
-                // Tworzenie planszy
-                int[,] Board = new int[sizeX, sizeY];
-
-                // Inicjalizacja komórek planszy
-                for (int i = 0; i < sizeX; i++)
+                for (int j = 0; j < columns; j++)
                 {
-                    for (int j = 0; j < sizeY; j++)
-                    {
-                        Board[i, j] = 0; // Domyślnie komórka ma wartość 0
-                    }
+                    Board[i, j] = 0; // Domyślnie komórka ma wartość 0
                 }
-                
-                Random rand = new Random();
+            }
 
-                // Generowanie min
-                for (int i = 0; i < numberOfMines; i++)
+            Random rand = new Random();
+
+            // Generowanie min
+            for (int i = 0; i < mines; i++)
+            {
+                int x, y;
+
+                do
                 {
-                    int x = rand.Next(sizeX);
-                    int y = rand.Next(sizeY);
+                    x = rand.Next(rows);
+                    y = rand.Next(columns);
+                } while (x == avoidRow && y == avoidColumn); // Sprawdź, czy współrzędne nie są równe podanym
 
-                    // Sprawdzenie, czy na danej pozycji już jest mina
-                    // Jeśli tak, powtórz losowanie
-                    if (Board[x, y] == 10)
-                    {
-                        i--;
-                        continue;
-                    }
-
-                    Board[x, y] = 10;
+                // Sprawdzenie, czy na danej pozycji już jest mina
+                if (Board[x, y] == 10)
+                {
+                    i--;
+                    continue;
                 }
 
-                // Liczenie min na polach sąsiednich
-                for (int i = 0; i < sizeX; i++)
+                Board[x, y] = 10;
+            }
+
+            // Liczenie min na polach sąsiednich
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
                 {
-                    for (int j = 0; j < sizeY; j++)
+                    if (Board[i, j] != 10) // Jeśli pole nie zawiera miny
                     {
-                        if (Board[i, j] != 10) // Jeśli pole nie zawiera miny
+                        int liczbaMin = 0;
+
+                        // Sprawdzanie sąsiednich pól
+                        for (int dx = -1; dx <= 1; dx++)
                         {
-                            int liczbaMin = 0;
-
-                            // Sprawdzanie sąsiednich pól
-                            for (int dx = -1; dx <= 1; dx++)
+                            for (int dy = -1; dy <= 1; dy++)
                             {
-                                for (int dy = -1; dy <= 1; dy++)
-                                {
-                                    int nx = i + dx;
-                                    int ny = j + dy;
+                                int nx = i + dx;
+                                int ny = j + dy;
 
-                                    // Sprawdzanie, czy współrzędne są w granicach planszy
-                                    if (nx >= 0 && nx < sizeX && ny >= 0 && ny < sizeY)
-                                    {
-                                        if (Board[nx, ny] == 10)
-                                        {
-                                            liczbaMin++;
-                                        }
-                                    }
+                                // Sprawdzanie, czy współrzędne są w granicach planszy
+                                if (nx >= 0 && nx < rows && ny >= 0 && ny < columns && Board[nx, ny] == 10)
+                                {
+                                    liczbaMin++;
                                 }
                             }
-
-                            // Aktualizacja wartości pola
-                            Board[i, j] = liczbaMin;
                         }
+
+                        // Aktualizacja wartości pola
+                        Board[i, j] = liczbaMin;
                     }
                 }
-            return Board;
             }
+            return Board;
+        }
+
 
 
         public void CreateGridBoard()
@@ -136,6 +140,8 @@ namespace Minesweeper
 
                     button.Click += BoardButtonLeftClick;
                     button.MouseRightButtonUp += ButtonFlag;
+                    button.PreviewMouseLeftButtonDown += ButtonLeftDown;
+                    button.PreviewMouseLeftButtonUp += ButtonLeftUp;
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
                     GridBoard.Children.Add(button);
@@ -150,6 +156,17 @@ namespace Minesweeper
         private void BoardButtonLeftClick(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
+
+            if(isBoardGenerated == false)
+            {
+                var position = (Tuple<int, int, int>)button.Tag;
+                int row = position.Item1;
+                int column = position.Item2;
+                int flag = position.Item3;
+                isBoardGenerated = true;
+                board = GameBoardGenerator(row, column);
+            }
+            
             BoardButtonUncover(button);
         }
 
@@ -158,8 +175,19 @@ namespace Minesweeper
             var position = (Tuple<int, int, int>)button.Tag;
             int row = position.Item1;
             int column = position.Item2;
+            int flag = position.Item3;
             GridBoard.Children.Remove(button);
             buttons[row, column] = null;
+
+            if (int.Parse(TimerTextBlock.Text) == 0)
+            {
+                timer.Start();
+            }
+
+            if (flag != 0)
+            {
+                FlagCounter.Text = (int.Parse(FlagCounter.Text)+1).ToString();
+            }
 
             var textBlock = new TextBlock
             {
@@ -217,9 +245,20 @@ namespace Minesweeper
                     textBlock.Foreground = Brushes.Black;
                     textBlock.FontWeight = FontWeights.Bold;
                     textBlock.Text = "☼";
+                    textBlock.Background= Brushes.Red;
+                    GameLost();
                     break;
                 default:
                     break;
+            }
+
+            if(board[row, column] != 10)
+            {
+                winCounter++;
+                if(winCounter >= ((rows * columns) - mines))
+                {
+                    GameWon();
+                }
             }
 
             Grid.SetRow(textBlock, row);
@@ -229,7 +268,7 @@ namespace Minesweeper
 
         }
 
-        private void ButtonFlag(object sender, RoutedEventArgs e)
+        private void ButtonFlag(object sender, MouseButtonEventArgs e)
         {
             int FlagNumber = int.Parse(FlagCounter.Text);
             var button = (Button)sender;
@@ -237,29 +276,90 @@ namespace Minesweeper
             int row = position.Item1;
             int column = position.Item2;
             int state = position.Item3;
-                switch (state)
-                {
+            switch (state)
+            {
 
-                    case 0:
-                        button.Content = "🚩";
-                        button.Tag = new Tuple<int, int, int>(row, column, 1);
-                        FlagCounter.Text = (FlagNumber - 1).ToString();
-                        break;
-                    case 1:
-                        button.Content = "?";
-                        button.Tag = new Tuple<int, int, int>(row, column, 2);
-                        break;
-                    case 2:
-                        button.Content = "";
-                        button.Tag = new Tuple<int, int, int>(row, column, 0);
-                        FlagCounter.Text = (FlagNumber + 1).ToString();
-                        break;
-                    default:
-                        break;
-                
+                case 0:
+                    button.Content = "🚩";
+                    button.Tag = new Tuple<int, int, int>(row, column, 1);
+                    FlagCounter.Text = (FlagNumber - 1).ToString();
+                    break;
+                case 1:
+                    button.Content = "?";
+                    button.Tag = new Tuple<int, int, int>(row, column, 2);
+                    break;
+                case 2:
+                    button.Content = "";
+                    button.Tag = new Tuple<int, int, int>(row, column, 0);
+                    FlagCounter.Text = (FlagNumber + 1).ToString();
+                    break;
+                default:
+                    break;
+
             }
         }
 
+        private void ButtonLeftDown(object sender, MouseButtonEventArgs e)
+        {
+            StatusEmoji.Fill = new ImageBrush(new BitmapImage(new Uri("fear.png", UriKind.Relative)));
+        }
+
+        private void ButtonLeftUp(object sender, MouseButtonEventArgs e)
+        {
+            StatusEmoji.Fill = new ImageBrush(new BitmapImage(new Uri("smile.png", UriKind.Relative)));
+        }
+
+        private void GameWon()
+        {
+            WinScreen.Visibility = Visibility.Visible;
+            timer.Stop();
+            StatusEmoji.Fill = new ImageBrush(new BitmapImage(new Uri("cool.png", UriKind.Relative)));
+            BackButton.Foreground = Brushes.Red;
+            LabelTime.Content = "Your time: " + TimerTextBlock.Text;
+        }
+
+        private void GameLost()
+        {
+            StatusEmoji.Fill = new ImageBrush(new BitmapImage(new Uri("dead.png", UriKind.Relative)));
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (board[i, j] == 10)
+                    {
+                        if (buttons[i, j] != null && buttons[i, j] is Button)
+                        {
+                            var textBlock = new TextBlock
+                            {
+                                Width = 30,
+                                Height = 30,
+                                FontSize = 20,
+                                Margin = new Thickness(1),
+                                Background = Brushes.White,
+                                Tag = new Tuple<int, int>(i, j),
+                                TextAlignment = TextAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Foreground = Brushes.Black,
+                                FontWeight = FontWeights.Bold,
+                                Text = "☼"
+                            };
+
+                            Grid.SetRow(textBlock, i);
+                            Grid.SetColumn(textBlock, j);
+                            GridBoard.Children.Add(textBlock);
+                        }
+                    }
+                    if (buttons[i, j] != null)
+                    {
+                        buttons[i, j].IsEnabled = false;
+                    }
+                }
+            }
+
+            timer.Stop();
+
+        }
 
 
         //Funkcje licznika
@@ -268,7 +368,6 @@ namespace Minesweeper
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
-            timer.Start();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -291,6 +390,8 @@ namespace Minesweeper
         private void ButtonBack(object sender, RoutedEventArgs e)
         {
             MainWindow MainMenu = new MainWindow();
+            MainMenu.Left = Left;
+            MainMenu.Top = Top;
             MainMenu.Show();
             Close();
         }

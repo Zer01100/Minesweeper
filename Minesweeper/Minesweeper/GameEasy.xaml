@@ -10,11 +10,7 @@
         FontFamily="Digital-7 Mono"
         ResizeMode="NoResize">
 
-    <Window.Resources>
-        <local:BoardVisualConverter x:Key="BoardVisualConverter" />
-    </Window.Resources>
-
-    <Grid Width="350px" Height="550px" VerticalAlignment="Top" Margin="0,0,0,25">
+    <Grid VerticalAlignment="Top">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -29,11 +25,63 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Button Content="Back" 
+        <Grid x:Name="WinScreen"                   
+                   Grid.Row="0"
+                   Grid.RowSpan="5"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Opacity="0.9" 
+                   Background="Black"
+                   Panel.ZIndex="1"
+                   Visibility="Hidden"
+                   MouseLeftButtonDown="GameRestart"
+                   >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="1"
+                   Grid.Column="0"
+                   HorizontalAlignment="Center"
+                   Content="CONGRATULATIONS!"
+                   FontSize="40"
+                   Foreground="Red" />
+
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   HorizontalAlignment="Center"
+                   Content="YOU WON"
+                   FontSize="30"
+                   Foreground="Red" />
+
+            <Label Name="LabelTime"
+                   Grid.Row="3"
+                   Grid.Column="0"
+                   HorizontalAlignment="Center"
+                   Content=""
+                   FontSize="25"
+                   Foreground="Red" />
+        </Grid>
+
+        <Button x:Name="BackButton" Content="Back" 
                 HorizontalAlignment="Left" 
                 Height="25" Margin="10,0,0,0" 
                 VerticalAlignment="Center" Width="50" 
-                Click="ButtonBack" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="20" Grid.Row="1"/>
+                Click="ButtonBack"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                FontSize="20" Grid.Row="1"
+                Panel.ZIndex="2"
+                />
 
         <TextBlock x:Name="TimerTextBlock" 
                    HorizontalAlignment="Center" 
@@ -63,7 +111,8 @@
             TextAlignment="Right" Grid.Column="2" Text="0"
                    />
 
-        <Rectangle x:Name="StatusEmoji" Grid.Column="1" 
+        <Rectangle x:Name="StatusEmoji" 
+                   Grid.Column="1" 
                    HorizontalAlignment="Center" 
                    Height="63" Margin="0,20,0,0" 
                    Grid.Row="2" 
@@ -71,13 +120,14 @@
                    Width="60" 
                    MouseLeftButtonDown="GameRestart"
                    RenderOptions.BitmapScalingMode="HighQuality"
+                   Panel.ZIndex="2"
                    >
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/Smile.png" Stretch="Uniform" TileMode="None"/>
+                <ImageBrush Stretch="Uniform" TileMode="None"/>
             </Rectangle.Fill>
         </Rectangle>
 
-        <Grid x:Name="GridBoard" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="20px">
+        <Grid x:Name="GridBoard" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 
         </Grid>
 

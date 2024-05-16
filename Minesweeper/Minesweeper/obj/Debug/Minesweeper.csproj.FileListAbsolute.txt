@@ -26,7 +26,6 @@ C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\GameEasy.g.cs
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\MainWindow.g.cs
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\App.g.cs
-C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\Minesweeper_MarkupCompile.cache
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\Minesweeper_MarkupCompile.lref
 C:\Users\lisja\OneDrive\Dokumenty\GitHub\Minesweeper\Minesweeper\Minesweeper\obj\Debug\GameEasy.baml
